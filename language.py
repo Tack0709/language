@@ -17,31 +17,54 @@ def getData(data_name):
             ngram_data[ngram] = int(count)
     return ngram_data
 
-def caluculate4gramProb(context, symbol, fourgramData, trigramData):
+def calculate4gramProb(context, symbol, fourgramData, trigramData):
     word = context + symbol
     fourCount = fourgramData.get(word)
     thirdCount = trigramData.get(context)
     prob = fourCount / thirdCount
-    print(f"P({symbol}|{context}) = {prob}")    
-
+    print(f"P({symbol}|{context}) = {prob}")   
+    
+def calculateLI(context, fourgramData, trigramData, bigramData, unigramData):
+    ramuda1 = 0.1
+    ramuda2 = 0.1
+    ramuda3 = 0.2
+    ramuda4 = 0.5
+    Sum = unigramData.get("G") + unigramData.get("C") + unigramData.get("P")
+    
+    print(unigramData.get(context[3]) / Sum)
+    print(bigramData.get(context[2:4]) / unigramData.get(context[2]))
+    print(trigramData.get(context[1:4]) / bigramData.get(context[1:3]))
+    prob1 = ramuda1 * (unigramData.get(context[3]) / Sum)
+    prob2 = ramuda2 * (bigramData.get(context[2:4]) / unigramData.get(context[2]))
+    prob3 = ramuda3 * (trigramData.get(context[1:4]) / bigramData.get(context[1:3]))
+    prob4 = ramuda4 * (fourgramData.get(context) / trigramData.get(context[0:3]))
+    
+    prob =  prob1 + prob2 + prob3 + prob4
+    print(f"{context}:{prob}")
+    
 if __name__ == "__main__":
 
     # CSVを読み込む
-    data1 = getData("1.csv")
-    data2 = getData("2.csv")
-    data3 = getData("3.csv")
-    data4 = getData("4.csv")
-
-    # データ部を取得
-    print(data1)
-    print(data2)
-    print(data3)
-    print(data4)
+    unigramData = getData("1.csv")
+    bigramData = getData("2.csv")
+    trigramData = getData("3.csv")
+    fourgramData = getData("4.csv")
     
 # =============================================================================
-#     kadai(1)
+# kadai(1)
 # =============================================================================
-    caluculate4gramProb("PCC", "G", data4, data3)
-    caluculate4gramProb("PCC", "C", data4, data3)
-    caluculate4gramProb("PCC", "P", data4, data3)
+    print("最尤推定")
+    calculate4gramProb("PCC", "G", fourgramData, trigramData)
+    calculate4gramProb("PCC", "C", fourgramData, trigramData)
+    calculate4gramProb("PCC", "P", fourgramData, trigramData)
+
+# =============================================================================
+# kadai(2)
+# =============================================================================
+    print("線形補間法")
+    calculateLI("PCCG", fourgramData, trigramData, bigramData, unigramData)
+    calculateLI("PCCC", fourgramData, trigramData, bigramData, unigramData)
+    calculateLI("PCCP", fourgramData, trigramData, bigramData, unigramData)
+
+
 
