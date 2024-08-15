@@ -17,6 +17,12 @@ def getData(data_name):
             ngram_data[ngram] = int(count)
     return ngram_data
 
+def caluculate4gramProb(context, symbol, fourgramData, trigramData):
+    word = context + symbol
+    fourCount = fourgramData.get(word)
+    thirdCount = trigramData.get(context)
+    prob = fourCount / thirdCount
+    print(f"P({symbol}|{context}) = {prob}")    
 
 if __name__ == "__main__":
 
@@ -31,4 +37,11 @@ if __name__ == "__main__":
     print(data2)
     print(data3)
     print(data4)
+    
+# =============================================================================
+#     kadai(1)
+# =============================================================================
+    caluculate4gramProb("PCC", "G", data4, data3)
+    caluculate4gramProb("PCC", "C", data4, data3)
+    caluculate4gramProb("PCC", "P", data4, data3)
 
